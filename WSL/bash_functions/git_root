@@ -1,0 +1,6 @@
+function git_root() {
+    REPO_ROOT=$(git rev-parse --show-toplevel)
+    if [ -d "$REPO_ROOT" ]; then 
+        cd $REPO_ROOT
+    fi
+}

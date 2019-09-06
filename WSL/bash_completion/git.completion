@@ -1,0 +1,54 @@
+_git_cr ()
+{
+    __gitcomp_nl "$(__git_refs)"
+}
+#_git_compare ()
+#{
+#    _git_diff
+#}
+_git_update ()
+{
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    rev_opts="person1 person2 person3"
+    flag_opts="-c --checkout -r --rebase --remote"
+    case "$cur" in
+        -*)
+            COMPREPLY=( $(compgen -W "${flag_opts}" -- ${cur}) )
+            return 0;;
+    esac
+    case "$prev" in
+        --remote)
+            __gitcomp_nl "$(__git_remotes)"
+            return 0;;
+    esac
+    case "$cur" in
+        *)
+            __gitcomp_nl "$(__git_refs)"
+            return 0;;
+    esac
+}
+#_git_create_pr ()
+#{
+#    local cur prev opts
+#    COMPREPLY=()
+#    cur="${COMP_WORDS[COMP_CWORD]}"
+#    prev="${COMP_WORDS[COMP_CWORD-1]}"
+#    rev_opts="person1 person2 person3"
+#    flag_opts="-d -r"
+#    case "$cur" in
+#        -*)
+#            COMPREPLY=( $(compgen -W "${flag_opts}" -- ${cur}) )
+#            return 0;;
+#    esac
+#    case "$prev" in
+#        -r)
+#            COMPREPLY=( $(compgen -W "${rev_opts}" -- ${cur}) )
+#            return 0;;
+#        -d)
+#            COMPREPLY=( $(compgen -W "$(getTickets)" -- ${cur}) )
+#            return 0;;
+#    esac
+#}

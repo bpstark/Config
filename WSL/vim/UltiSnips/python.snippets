@@ -1,0 +1,17 @@
+snippet pymain
+#! /usr/bin/env python3
+import argparse
+
+def main(args):
+	$0
+
+if __name__ == '__main__':
+	parser = argparse.ArgumentParser(description='$1')
+	$2
+	args = parser.parse_args()
+	main(args)
+endsnippet
+
+snippet test1
+blah
+endsnippet

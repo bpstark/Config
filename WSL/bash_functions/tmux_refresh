@@ -1,0 +1,5 @@
+function refresh {                                                                                
+    if [ -n "$TMUX" ]; then                                                                               
+        export $(tmux show-environment | grep "^DISPLAY")                                             
+    fi
+}                                                                                                 

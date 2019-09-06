@@ -1,0 +1,123 @@
+##### global ####
+global !p
+import re
+def to_snake_case(camel):
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', camel)
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).upper()
+
+def to_camel_case(snake_str):
+    components = snake_str.split('_')
+    return "".join(components)
+
+def write_docstring_args(arglist, snip):
+	args = str(arglist).split(',')
+
+	if len(args) > 1:
+		c = 0
+		for arg in args:
+			if c == 0:
+				snip.rv += arg
+				c = 1
+			else:
+				snip += '*       : %s' % arg.strip()
+	else:
+		snip.rv = args[0]
+def find_header(partial_path):
+	from subprocess import check_output
+	from os import path as osp
+	paths = vim.eval('g:syntastic_cpp_include_dirs')
+	paths = list(map(str, filter(osp.isdir, paths)))
+	cmd = ['find'] + paths
+	cmd += ['-name', osp.basename(partial_path)]
+	files = check_output(cmd).decode('utf-8').split('\n')
+	for f in files:
+		f = f.strip()
+		if f.endswith(partial_path):
+			inc_path = None
+			for p in paths:
+				if f.startswith(str(p)):
+					tmp = f.replace(p, '').strip('/')
+					if inc_path is None or len(tmp) < len(inc_path):
+						inc_path = tmp
+			return (f, inc_path)
+	return (None, None)
+def stub_cpp(header):
+	import os
+	from tempfile import mktemp
+	tmp = mktemp(suffix='.cpp')
+	os.system("cpp_stubs {} > {}".format(header, tmp))
+	with open(tmp, 'r') as fout:
+		data = fout.read()
+	os.unlink(tmp)
+	return data
+
+endglobal
+##### global ####
+snippet cppmain
+#include <iostream>
+
+using namespace std;
+int main(int argc, char * argv []){
+	$0
+}
+endsnippet
+
+snippet cls
+`!p
+import os
+import datetime
+year = datetime.datetime.today().year
+dirname = os.path.basename(os.path.dirname(vim.eval('expand("%:p")')))
+name = os.path.splitext(fn)[0]
+header = "{}/{}.h".format(dirname, name)
+header, inc_path = find_header(header)
+stubs = stub_cpp(header)
+code = '''/* Copyright {year} Microsoft.com, Inc. or its affiliates. All Rights Reserved. */
+
+#include "{inc_path}"
+
+{stubs}
+'''
+snip.rv = code.format(year=year, inc_path=inc_path, stubs=stubs)
+`
+endsnippet
+
+snippet hcls
+`!p
+import os
+import datetime
+name = os.path.splitext(fn)
+year = datetime.datetime.today().year
+dirname = os.path.basename(os.path.dirname(vim.eval('expand("%:p")')))
+#guard = '__{}_{}_H__'.format(to_snake_case(dirname), to_snake_case(name[0]))
+cls = to_camel_case(name[0])
+code = '''/* Copyright {year} Microsoft.com, Inc. or its affiliates. All Rights Reserved. */
+#pragma once
+namespace {ns} {{
+/*
+ * @brief 
+ */
+class {cls} {{ '''
+snip.rv = code.format(year=year, cls=cls, ns=to_snake_case(dirname))
+`
+	public:
+`!p
+snip.rv = '        {cls}();\n        ~{cls}();'.format(cls=cls)
+`
+	private:
+		$0
+};
+}
+endsnippet
+
+snippet hfunc "Basic c++ header doxygen function template" b
+/**
+* @brief: ${4:brief}
+*
+* @param: `!p write_docstring_args(t[3],snip)`
+*
+* @return: `!p snip.rv = t[1]`
+*/
+${1:ReturnType} ${2:FunctionName}(${3:param});
+endsnippet
+# vim:ft=snippets:

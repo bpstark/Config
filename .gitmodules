@@ -1,0 +1,18 @@
+[submodule "WSL/vim/bundle/syntastic"]
+	path = WSL/vim/bundle/syntastic
+	url = https://github.com/vim-syntastic/syntastic.git
+[submodule "WSL/vim/bundle/tagbar"]
+	path = WSL/vim/bundle/tagbar
+	url = https://github.com/majutsushi/tagbar.git
+[submodule "WSL/vim/bundle/ultisnips"]
+	path = WSL/vim/bundle/ultisnips
+	url = https://github.com/SirVer/ultisnips.git
+[submodule "WSL/vim/bundle/vim-airline"]
+	path = WSL/vim/bundle/vim-airline
+	url = https://github.com/vim-airline/vim-airline.git
+[submodule "WSL/vim/bundle/vim-localvimrc"]
+	path = WSL/vim/bundle/vim-localvimrc
+	url = https://github.com/embear/vim-localvimrc.git
+[submodule "WSL/vim/bundle/gruvbox"]
+	path = WSL/vim/bundle/gruvbox
+	url = https://github.com/morhetz/gruvbox.git
