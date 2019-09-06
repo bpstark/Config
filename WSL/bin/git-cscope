@@ -1,0 +1,14 @@
+#! /bin/bash
+TEMPFILE=`mktemp`
+
+ROOT=`git rev-parse --show-toplevel`
+
+if [ ! -d "$ROOT" ]; then
+    echo "failed to find root."
+    exit
+fi
+
+cd $ROOT
+find_source> $TEMPFILE
+cscope -i $TEMPFILE -q -b
+rm -f $TEMPFILE

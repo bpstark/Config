@@ -1,0 +1,19 @@
+#! /usr/bin/env python3
+import argparse
+from sys import stdin
+from os.path import splitext
+
+def main(args):
+    exts = set(map(lambda x: x if x[0] == '.' else '.{}'.format(x), args.filetypes))
+
+    for line in stdin:
+        line = line.rstrip()
+        if splitext(line)[-1] in exts:
+            print(line)
+    
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='simple program filter lines for filetype')
+    parser.add_argument('filetypes', type=str, nargs='+', help='filetypes to search for.') 
+    args = parser.parse_args()
+    main(args)

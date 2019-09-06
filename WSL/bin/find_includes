@@ -1,0 +1,40 @@
+#! /usr/bin/env python3
+import argparse
+import re
+from os import path as osp
+
+def parse_file(fqp):
+    srch = re.compile(r'#include "([^"]+)"')
+    base_path = osp.dirname(fqp)
+    with open(fqp, 'r') as fin:
+        for line in fin:
+            res = srch.search(line)
+            if res:
+                yield osp.abspath(osp.join(base_path, res.group(1)))
+
+
+def main(args):
+    root = osp.abspath(args.root)
+    to_parse = [osp.abspath(args.input)]
+    needed = set(to_parse)
+    while(to_parse):
+        fqp = to_parse.pop()
+        for f in parse_file(fqp):
+            if not osp.isfile(f):
+                print("'{}' is missing".format(f))
+                continue
+            elif f not in needed:
+                to_parse.append(f)
+                needed.add(f)
+    files = map(lambda p: osp.relpath(p, root), needed)
+    for f in files:
+        print(f)
+    
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='')
+    parser.add_argument('root', type=str, help='the root of the repo')
+    parser.add_argument('input', type=str, help='the file to start with for includes')
+    
+    args = parser.parse_args()
+    main(args)

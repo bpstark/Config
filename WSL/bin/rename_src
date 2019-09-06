@@ -1,0 +1,6 @@
+#! /bin/bash
+
+SRCH="$1"
+RPLC="$2"
+find -type f | type_grep h c cpp tcc txt | xargs perl -p -e "s/$1/$2/g" -i
+find -type f -name "*${1}*" | type_grep h c cpp tcc txt | xargs rename "s/$1/$2/g" 

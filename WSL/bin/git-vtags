@@ -1,0 +1,14 @@
+#! /bin/bash
+TEMPFILE=`mktemp`
+
+ROOT=`git rev-parse --show-toplevel`
+
+if [ ! -d "$ROOT" ]; then
+    echo "failed to find root."
+    exit
+fi
+
+cd $ROOT
+find . \( -path ./build -o -path ./00include -o -path ./00libs \) -prune -o \( -name '*.c' -o -name '*.cc' -o -name '*.h' -o -name '*.cpp' \) -printf '%P\n'> $TEMPFILE
+ctags -L $TEMPFILE -R --c++-kinds=+p --fields=+liaS --extra=+q "$@"
+rm -f $TEMPFILE

@@ -1,0 +1,41 @@
+#! /usr/bin/env python3
+import argparse
+import CppHeaderParser
+
+def get_params(params):
+    for p in params:
+        yield "{} {}".format(p['type'], p['name'])
+def build_function(cls, fn):
+    fn_str = ''
+    if not fn['constructor']:
+        fn_str = '{} '.format(fn['rtnType'])
+    fn_str += '{}::{}({})'.format(cls, fn['name'], ', '.join(get_params(fn['parameters'])))
+    if fn['const']:
+        fn_str += ' const'
+    return fn_str
+def get_functions(cls):
+    name = cls['name']
+    for _, methods in cls['methods'].items():
+        for method in methods:
+            yield build_function(name, method)
+
+
+def parse_class(cls):
+    for func in get_functions(cls):
+        print("{} {{\n}}".format(func))
+
+def main(args):
+    try:
+        hdr = CppHeaderParser.CppHeader(args.header)
+    except CppHeaderParser.CppParseError:
+        return
+    for _, cls in hdr.classes.items():
+        parse_class(cls)
+    
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Parse a class header file and produce stubs for all methods found')
+    parser.add_argument('header', type=str, help='the header file to parse')
+    
+    args = parser.parse_args()
+    main(args)

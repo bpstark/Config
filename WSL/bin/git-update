@@ -1,0 +1,55 @@
+#! /usr/bin/python
+#pylint: disable=invalid-name
+'''git-update updates the repo from upstream.'''
+
+import argparse
+from subprocess import Popen, PIPE, check_call, CalledProcessError
+
+def get_current_branch():
+    '''get the current branch name'''
+    cmd = ['git', 'rev-parse', '--abbrev-ref', 'HEAD']
+    sub = Popen(cmd, stdout=PIPE)
+    stdout, _ = sub.communicate()
+    if sub.returncode != 0:
+        return None
+    return stdout.rstrip()
+
+def run_chained_cmds(cmds):
+    '''run commands in line unless rc of previous not ok'''
+    for cmd in cmds:
+        try:
+            check_call(cmd)
+        except CalledProcessError as err:
+            return err.returncode
+    return 0
+
+def main():
+    '''Main code entry.'''
+    parser = argparse.ArgumentParser("Update the repo from upstream.")
+    parser.add_argument('-r', '--rebase', action='store_true', default=False,
+                        help='Rebase current branch ontop of master once updated.')
+    parser.add_argument('-c', '--checkout', action='store_true', default=False,
+                        help='checkout current branch after update.')
+    parser.add_argument('--remote', type=str, default='origin',
+                        help='The remote to fetch from')
+    parser.add_argument('parent', nargs='?', type=str, default='mainline', help='the parent branch to update.')
+    args = parser.parse_args()
+    cur_branch = None
+    if args.rebase or args.checkout:
+        cur_branch = get_current_branch()
+        if cur_branch is None:
+            print 'Failed to find current branch, will not continue.'
+            exit(1)
+    cmds = [
+        ['git', 'fetch', args.remote],
+        ['git', 'rebase', '{}/{}'.format(args.remote, args.parent), args.parent],
+        ]
+    if args.rebase:
+        cmds.append(['git', 'rebase', args.parent, cur_branch])
+    elif args.checkout:
+        cmds.append(['git', 'checkout', cur_branch])
+    exit(run_chained_cmds(cmds))
+
+
+if __name__ == '__main__':
+    main()
