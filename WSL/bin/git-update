@@ -31,8 +31,10 @@ def main():
     parser.add_argument('-c', '--checkout', action='store_true', default=False,
                         help='checkout current branch after update.')
     parser.add_argument('--remote', type=str, default='origin',
-                        help='The remote to fetch from')
-    parser.add_argument('parent', nargs='?', type=str, default='mainline', help='the parent branch to update.')
+                        help='Your remote')
+    parser.add_argument('--upstream', type=str, default='upstream',
+                        help='The upstream remote')
+    parser.add_argument('parent', nargs='?', type=str, default='master', help='the parent branch to update.')
     args = parser.parse_args()
     cur_branch = None
     if args.rebase or args.checkout:
@@ -41,8 +43,9 @@ def main():
             print 'Failed to find current branch, will not continue.'
             exit(1)
     cmds = [
-        ['git', 'fetch', args.remote],
-        ['git', 'rebase', '{}/{}'.format(args.remote, args.parent), args.parent],
+        ['git', 'fetch', args.upstream],
+        ['git', 'rebase', '{}/{}'.format(args.upstream, args.parent), args.parent],
+        ['git', 'push', args.remote, args.parent],
         ]
     if args.rebase:
         cmds.append(['git', 'rebase', args.parent, cur_branch])

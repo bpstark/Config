@@ -1,0 +1,10 @@
+[alias]
+	co = checkout
+	st = status
+	br = branch
+[user]
+	name= Brian Stark
+	email = brstark@microsoft.com
+[core]
+	safecrlf = false
+	autocrlf = false
