@@ -16,3 +16,9 @@
 [submodule "WSL/vim/bundle/gruvbox"]
 	path = WSL/vim/bundle/gruvbox
 	url = https://github.com/morhetz/gruvbox.git
+[submodule "WSL/vim/bundle/jedi-vim"]
+	path = WSL/vim/bundle/jedi-vim
+	url = https://github.com/davidhalter/jedi-vim.git
+[submodule "WSL/vim/bundle/YouCompleteMe"]
+	path = WSL/vim/bundle/YouCompleteMe
+	url = https://github.com/ycm-core/YouCompleteMe.git
