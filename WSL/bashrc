@@ -134,7 +134,6 @@ set -o vi
 
 export GIT_PROMPT_ONLY_IN_REPO=1
 export GIT_PROMPT_FETCH_REMOTE_STATUS=0
-export GIT_PROMPT_START="${Yellow}${PathShort}${ResetColor}"
 export GIT_PROMPT_END="$ "
 GIT_PROMPT_SRC="${HOME}/.gitprompt/gitprompt.sh"
 if [ -f "${GIT_PROMPT_SRC}" ]; then

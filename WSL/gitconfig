@@ -8,6 +8,7 @@
 [core]
 	safecrlf = false
 	autocrlf = false
+	excludesfile = /home/bstark/.gitignore
 [diff]
 	tool = bc3
 [merge]
