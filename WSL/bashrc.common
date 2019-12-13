@@ -116,7 +116,6 @@ if ! shopt -oq posix; then
 fi
 
 export PATH="${HOME}/.bin:${HOME}/.bin_local:${PATH}"
-export DISPLAY=:0
 function load_dir() {
     if [ -d $1 ]; then
         for f in ${1}/*; do
