@@ -4,6 +4,7 @@
 
 import argparse
 from subprocess import Popen, PIPE, check_call, CalledProcessError
+import sys
 
 def get_current_branch():
     '''get the current branch name'''
@@ -30,28 +31,33 @@ def main():
                         help='Rebase current branch ontop of master once updated.')
     parser.add_argument('-c', '--checkout', action='store_true', default=False,
                         help='checkout current branch after update.')
+    parser.add_argument('-s', '--submodule', action='store_true', default=False,
+                        help='Update submodules as well.')
     parser.add_argument('--remote', type=str, default='origin',
                         help='Your remote')
     parser.add_argument('--upstream', type=str, default='upstream',
                         help='The upstream remote')
-    parser.add_argument('parent', nargs='?', type=str, default='master', help='the parent branch to update.')
+    parser.add_argument('parent', nargs='?', type=str, default='master',
+                        help='the parent branch to update.')
     args = parser.parse_args()
     cur_branch = None
     if args.rebase or args.checkout:
         cur_branch = get_current_branch()
         if cur_branch is None:
-            print 'Failed to find current branch, will not continue.'
-            exit(1)
+            print('Failed to find current branch, will not continue.')
+            sys.exit(1)
     cmds = [
         ['git', 'fetch', args.upstream],
         ['git', 'rebase', '{}/{}'.format(args.upstream, args.parent), args.parent],
-        ['git', 'push', args.remote, args.parent],
         ]
+    if args.submodule:
+        cmds.append(['git', 'submodule', 'update', '--init', '--recursive'])
+    cmds.append(['git', 'push', args.remote, args.parent])
     if args.rebase:
         cmds.append(['git', 'rebase', args.parent, cur_branch])
     elif args.checkout:
         cmds.append(['git', 'checkout', cur_branch])
-    exit(run_chained_cmds(cmds))
+    sys.exit(run_chained_cmds(cmds))
 
 
 if __name__ == '__main__':
