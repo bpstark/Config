@@ -4,11 +4,11 @@
 	br = branch
 [user]
 	name= Brian Stark
-	email = brstark@microsoft.com
+	email = bstark@evernote.com
 [core]
 	safecrlf = false
 	autocrlf = false
-	excludesfile = /home/bstark/.gitignore
+	excludesfile = ~/.gitignore
 [diff]
 	tool = bc3
 [merge]

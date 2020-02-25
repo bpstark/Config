@@ -1,0 +1,9 @@
+source ${HOME}/.bashrc.common
+
+export DISPLAY=localhost:0.0
+alias ls='ls -G'
+export BASH_SILENCE_DEPRECATION_WARNING=1
+# bash-completion
+if [ -f /usr/local/etc/profile.d/bash_completion.sh ]; then
+  . /usr/local/etc/profile.d/bash_completion.sh
+fi
