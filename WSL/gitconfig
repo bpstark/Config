@@ -3,7 +3,7 @@
 	st = status
 	br = branch
 [user]
-	name= Brian Stark
+	name = Brian Stark
 	email = bstark@evernote.com
 [core]
 	safecrlf = false

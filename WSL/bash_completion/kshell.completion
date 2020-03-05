@@ -1,0 +1,23 @@
+_kshell ()
+{
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    rev_opts="person1 person2 person3"
+    flag_opts="-n -c -b"
+    case "$cur" in
+        -*)
+            COMPREPLY=( $(compgen -W "${flag_opts}" -- ${cur}) )
+            return 0;;
+    esac
+    #case "$prev" in
+    #    -n)
+    #        COMPREPLY=( $(compgen -W "$(getNamespaces)" -- ${cur}) )
+    #        return 0;;
+    #esac
+    COMPREPLY=( $(compgen -W "$(kubectl get pods | awk '{print $1}' | tail -n +2)" -- ${cur}) )
+
+}
+
+complete -F _kshell kshell 
