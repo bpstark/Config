@@ -16,3 +16,9 @@ if [ -f "${GCLOUD_PATH}/path.bash.inc" ]; then . "${GCLOUD_PATH}/path.bash.inc";
 if [ -f "${GCLOUD_PATH}/completion.bash.inc" ]; then . "${GCLOUD_PATH}/completion.bash.inc"; fi
 export JAVA_HOME=$(find '/usr/local/Cellar/openjdk@11' -type d -depth 1|sort|tail -n 1)
 export EDITOR=/usr/local/bin/vim
+alias klog='kubectl logs'
+alias set_host='sudo set_host'
+alias kpod='kubectl get pods'
+alias kcp='kubectl cp'
+alias kg='kubectl get'
+alias kd='kubectl describe'

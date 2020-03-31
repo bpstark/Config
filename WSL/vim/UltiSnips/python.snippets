@@ -1,17 +1,15 @@
 snippet pymain
 #! /usr/bin/env python3
+'''$1'''
 import argparse
 
 def main(args):
 	$0
 
+#pylint: disable=invalid-name
 if __name__ == '__main__':
-	parser = argparse.ArgumentParser(description='$1')
-	$2
-	args = parser.parse_args()
-	main(args)
-endsnippet
-
-snippet test1
-blah
+	parser = argparse.ArgumentParser(description='$2')
+	$3
+	arguments = parser.parse_args()
+	main(arguments)
 endsnippet

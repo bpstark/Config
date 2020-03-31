@@ -138,3 +138,7 @@ GIT_PROMPT_SRC="${HOME}/.gitprompt/gitprompt.sh"
 if [ -f "${GIT_PROMPT_SRC}" ]; then
 	source "${GIT_PROMPT_SRC}"
 fi
+
+export PYTHONPATH="${HOME}/.python:${PYTHONPATH}"
+alias pip=pip3
+alias python=python3

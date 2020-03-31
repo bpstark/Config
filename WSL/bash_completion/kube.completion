@@ -1,0 +1,87 @@
+_RESOUCRE_TYPES="bindings componentstatuses configmaps endpoints limitranges namespaces nodes persistentvolumeclaims persistentvolumes pods podtemplates replicationcontrollers resourcequotas secrets serviceaccounts services mutatingwebhookconfigurations validatingwebhookconfigurations customresourcedefinitions apiservices controllerrevisions daemonsets deployments replicasets statefulsets tokenreviews localsubjectaccessreviews selfsubjectaccessreviews selfsubjectrulesreviews subjectaccessreviews horizontalpodautoscalers cronjobs jobs certificatesigningrequests leases events ingresses networkpolicies poddisruptionbudgets podsecuritypolicies clusterrolebindings clusterroles rolebindings roles priorityclasses csidrivers csinodes storageclasses volumeattachments"
+_OPERATIONS="annotate api apply attach autoscale cluster config create delete describe diff edit exec explain expose get label logs patch port proxy replace run scale version"
+
+contains() {
+    if [[ $2 =~ (^|[[:space:]])$1($|[[:space:]]) ]]
+    then
+        return 0
+    else
+        return 1
+    fi
+}
+
+_kube_resources ()
+{
+    local r_type
+    r_type=$1
+    echo $(/usr/local/bin/kubectl get $r_type | awk '{print $1}' | tail -n +2)
+}
+_kube_alias_helper_no_type ()
+{
+    local cur prev
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    if contains $prev "$_RESOUCRE_TYPES"; then
+        COMPREPLY=( $(compgen -W "$(_kube_resources $prev)" -- ${cur}) )
+    else
+        COMPREPLY=( $(compgen -W "${_RESOUCRE_TYPES}" -- ${cur}) )
+    fi
+}
+_kubectl ()
+{
+
+    local cur prev
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    if [[ $prev == 'kubectl' ]]; then
+        COMPREPLY=( $(compgen -W "${_OPERATIONS}" -- ${cur}) )
+    elif contains $prev "$_OPERATIONS"; then
+        COMPREPLY=( $(compgen -W "${_RESOUCRE_TYPES}" -- ${cur}) )
+    elif contains $prev "$_RESOUCRE_TYPES"; then
+        COMPREPLY=( $(compgen -W "$(_kube_resources $prev)" -- ${cur}) )
+    fi
+}
+_kube_alias_helper()
+{
+    local cur prev flag_opts r_type
+    flag_opts=$1
+    r_type=$2
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    case "$cur" in
+        -*)
+            COMPREPLY=( $(compgen -W "${flag_opts}" -- ${cur}) )
+            return 0;;
+    esac
+    COMPREPLY=( $(compgen -W "$(_kube_resources $r_type)" -- ${cur}) )
+    return 0
+}
+_kshell ()
+{
+    local flag_opts
+    flag_opts="-n -c -b"
+    _kube_alias_helper "$flag_opts" "pods"
+}
+_klog ()
+{
+    local flag_opts
+    flag_opts="-f"
+    _kube_alias_helper "$flag_opts" "pods"
+}
+_kcp ()
+{
+    local flag_opts
+    flag_opts=""
+    _kube_alias_helper "$flag_opts" "pods"
+}
+
+complete -F _kshell kshell 
+complete -F _klog klog 
+complete -F _kubectl kubectl 
+complete -F _kube_alias_helper_no_type kg
+complete -F _kube_alias_helper_no_type kd
+complete -o default -F _kcp kcp
