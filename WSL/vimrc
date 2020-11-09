@@ -59,7 +59,8 @@ autocmd VimEnter * :TagbarOpen
 "autocmd FileType * :call tagbar#autoopen(0)
 
 "allow repo specific vimrc files
-let g:localvimrc_whitelist=['/Users/bstark/projects/[^/]\+']
+let g:localvimrc_sandbox=0
+let g:localvimrc_ask=0
 "let g:localvimrc_whitelist=['/mnt/c/Users/brstark/workspace/[^/]\+/src/[^/]\+']
 
 let g:syntastic_mode_map = {

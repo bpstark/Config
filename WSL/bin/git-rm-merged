@@ -1,0 +1,42 @@
+#! /usr/bin/env python3
+#pylint:disable=invalid-name
+'''tool to clear old branches'''
+import argparse
+import git
+
+def check_ref(git_obj, source_ref: str, ref: git.RemoteReference):
+    '''check if this branch should be removed and do so'''
+    if ref.name == source_ref:
+        return
+    try:
+        git_obj.merge_base(['--is-ancestor', ref.name, source_ref])
+        response = str(input('{} has been merged into {}, delete it? y/n: '.format(ref.name,
+                                                                                   source_ref)))
+        response = response.lower()
+        if response in ['y', 'yes']:
+            git_obj.push(['-d', ref.remote_name, ref.remote_head])
+    except git.GitCommandError:
+        pass
+
+def main(args):
+    '''Main'''
+    source = args.reference
+    if not source.startswith('upstream/'):
+        source = 'upstream/{}'.format(source)
+    repo = git.Repo()
+    to_check = filter(lambda ref: ref.is_remote() and ref.remote_name == 'upstream', repo.refs)
+    if args.pattern:
+        pattern = args.pattern.lower()
+        to_check = filter(lambda ref: ref.remote_head.lower().count(pattern) > 0, to_check)
+    git_obj = git.cmd.Git()
+    for ref in to_check:
+        check_ref(git_obj, source, ref)
+
+#pylint: disable=invalid-name
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='')
+    parser.add_argument('reference', type=str, help='The branch to check against')
+    parser.add_argument('-p', '--pattern', type=str, default=None,
+                        help='pattern to match for name of branch')
+    arguments = parser.parse_args()
+    main(arguments)

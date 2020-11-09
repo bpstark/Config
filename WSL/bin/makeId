@@ -1,0 +1,17 @@
+#! /usr/bin/env python3
+'''Make an identifier from FQDN'''
+import argparse
+
+def main(args):
+    parts = args.fqdn.split('.')
+    parts.reverse()
+    print('.'.join(parts))
+
+
+#pylint: disable=invalid-name
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Make an identifier from FQDN')
+    parser.add_argument('fqdn', type=str, metavar='FQDN',
+                        help='The FQDN to make identifier for.')
+    arguments = parser.parse_args()
+    main(arguments)

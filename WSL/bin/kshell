@@ -8,6 +8,7 @@ def main(args):
         command.extend(['-c', args.container])
     if args.namespace is not None:
         command.extend(['-n', args.namespace])
+    command.append('--')
     if args.bash:
         command.append('/bin/bash')
     else:

@@ -78,6 +78,13 @@ _kcp ()
     flag_opts=""
     _kube_alias_helper "$flag_opts" "pods"
 }
+_kx ()
+{
+    local cur
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    COMPREPLY=( $(compgen -W "$(kx -o dev-stable)" -- ${cur}) )
+}
 
 complete -F _kshell kshell 
 complete -F _klog klog 
@@ -85,3 +92,4 @@ complete -F _kubectl kubectl
 complete -F _kube_alias_helper_no_type kg
 complete -F _kube_alias_helper_no_type kd
 complete -o default -F _kcp kcp
+complete -F _kx kx 
