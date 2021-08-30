@@ -4,7 +4,7 @@
 	br = branch
 [user]
 	name = Brian Stark
-	email = bstark@evernote.com
+	email = bstark@carbonrobotics.com
 [core]
 	safecrlf = false
 	autocrlf = false
