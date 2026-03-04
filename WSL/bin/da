@@ -1,0 +1,3 @@
+#!  /usr/bin/env bash
+
+sudo nsenter -a -t $1 bash
